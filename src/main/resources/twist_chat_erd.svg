@@ -1,0 +1,150 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1000" height="800" viewBox="0 0 1000 800">
+  <style>
+    .table {
+      fill: #f5f5f5;
+      stroke: #333;
+      stroke-width: 2;
+    }
+    .table-header {
+      fill: #4a86e8;
+      stroke: #333;
+      stroke-width: 2;
+    }
+    .table-text {
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      fill: #333;
+    }
+    .header-text {
+      font-family: Arial, sans-serif;
+      font-size: 16px;
+      font-weight: bold;
+      fill: white;
+    }
+    .pk {
+      font-weight: bold;
+    }
+    .fk {
+      font-style: italic;
+      fill: #0000aa;
+    }
+    .relationship {
+      stroke: #333;
+      stroke-width: 1.5;
+      fill: none;
+      marker-end: url(#arrowhead);
+    }
+    .one-to-many {
+      stroke-dasharray: none;
+    }
+    .title {
+      font-family: Arial, sans-serif;
+      font-size: 24px;
+      font-weight: bold;
+      fill: #333;
+    }
+  </style>
+  
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#333" />
+    </marker>
+  </defs>
+  
+  <text x="500" y="40" text-anchor="middle" class="title">Twist Chat ERD Diagram</text>
+  
+  <!-- USERS TABLE -->
+  <rect x="50" y="100" width="200" height="30" class="table-header" rx="5" ry="5" />
+  <rect x="50" y="130" width="200" height="150" class="table" rx="0" ry="0" />
+  <text x="150" y="120" text-anchor="middle" class="header-text">USERS</text>
+  <text x="60" y="150" class="table-text pk">id (UUID) PK</text>
+  <text x="60" y="170" class="table-text">firebase_uid (VARCHAR) UNIQUE</text>
+  <text x="60" y="190" class="table-text">username (VARCHAR) UNIQUE</text>
+  <text x="60" y="210" class="table-text">display_name (VARCHAR)</text>
+  <text x="60" y="230" class="table-text">avatar_url (TEXT)</text>
+  <text x="60" y="250" class="table-text">created_at (TIMESTAMP)</text>
+  
+  <!-- CHATS TABLE -->
+  <rect x="400" y="100" width="200" height="30" class="table-header" rx="5" ry="5" />
+  <rect x="400" y="130" width="200" height="150" class="table" rx="0" ry="0" />
+  <text x="500" y="120" text-anchor="middle" class="header-text">CHATS</text>
+  <text x="410" y="150" class="table-text pk">id (UUID) PK</text>
+  <text x="410" y="170" class="table-text">is_group (BOOLEAN)</text>
+  <text x="410" y="190" class="table-text">name (VARCHAR)</text>
+  <text x="410" y="210" class="table-text fk">created_by (UUID) FK</text>
+  <text x="410" y="230" class="table-text">created_at (TIMESTAMP)</text>
+  <text x="410" y="250" class="table-text">mode (VARCHAR)</text>
+  
+  <!-- CHAT_MEMBERS TABLE -->
+  <rect x="400" y="350" width="200" height="30" class="table-header" rx="5" ry="5" />
+  <rect x="400" y="380" width="200" height="90" class="table" rx="0" ry="0" />
+  <text x="500" y="370" text-anchor="middle" class="header-text">CHAT_MEMBERS</text>
+  <text x="410" y="400" class="table-text pk fk">chat_id (UUID) PK, FK</text>
+  <text x="410" y="420" class="table-text pk fk">user_id (UUID) PK, FK</text>
+  <text x="410" y="440" class="table-text">joined_at (TIMESTAMP)</text>
+  
+  <!-- MESSAGES TABLE -->
+  <rect x="750" y="100" width="200" height="30" class="table-header" rx="5" ry="5" />
+  <rect x="750" y="130" width="200" height="190" class="table" rx="0" ry="0" />
+  <text x="850" y="120" text-anchor="middle" class="header-text">MESSAGES</text>
+  <text x="760" y="150" class="table-text pk">id (UUID) PK</text>
+  <text x="760" y="170" class="table-text fk">chat_id (UUID) FK</text>
+  <text x="760" y="190" class="table-text fk">sender_id (UUID) FK</text>
+  <text x="760" y="210" class="table-text">content (TEXT)</text>
+  <text x="760" y="230" class="table-text">message_type (VARCHAR)</text>
+  <text x="760" y="250" class="table-text">created_at (TIMESTAMP)</text>
+  <text x="760" y="270" class="table-text">is_deleted (BOOLEAN)</text>
+  <text x="760" y="290" class="table-text">expires_at (TIMESTAMP)</text>
+  <text x="760" y="310" class="table-text">extra (JSONB)</text>
+  
+  <!-- MEDIA TABLE -->
+  <rect x="750" y="400" width="200" height="30" class="table-header" rx="5" ry="5" />
+  <rect x="750" y="430" width="200" height="110" class="table" rx="0" ry="0" />
+  <text x="850" y="420" text-anchor="middle" class="header-text">MEDIA</text>
+  <text x="760" y="450" class="table-text pk">id (UUID) PK</text>
+  <text x="760" y="470" class="table-text fk">message_id (UUID) FK</text>
+  <text x="760" y="490" class="table-text">url (TEXT)</text>
+  <text x="760" y="510" class="table-text">media_type (VARCHAR)</text>
+  <text x="760" y="530" class="table-text">uploaded_at (TIMESTAMP)</text>
+  
+  <!-- CHAT_MODES TABLE -->
+  <rect x="400" y="550" width="200" height="30" class="table-header" rx="5" ry="5" />
+  <rect x="400" y="580" width="200" height="110" class="table" rx="0" ry="0" />
+  <text x="500" y="570" text-anchor="middle" class="header-text">CHAT_MODES</text>
+  <text x="410" y="600" class="table-text pk fk">chat_id (UUID) PK, FK</text>
+  <text x="410" y="620" class="table-text">mode (VARCHAR)</text>
+  <text x="410" y="640" class="table-text">emoji_only_until (TIMESTAMP)</text>
+  <text x="410" y="660" class="table-text">secret_chat_expires (TIMESTAMP)</text>
+  
+  <!-- RELATIONSHIPS -->
+  <!-- users to chats (created_by) -->
+  <path d="M 250 150 C 300 150, 350 210, 400 210" class="relationship one-to-many" />
+  
+  <!-- users to chat_members -->
+  <path d="M 150 280 C 150 420, 350 420, 400 420" class="relationship one-to-many" />
+  
+  <!-- chats to chat_members -->
+  <path d="M 500 280 L 500 350" class="relationship one-to-many" />
+  
+  <!-- chats to messages -->
+  <path d="M 600 170 C 650 170, 700 170, 750 170" class="relationship one-to-many" />
+  
+  <!-- users to messages (sender_id) -->
+  <path d="M 250 190 C 500 190, 700 190, 750 190" class="relationship one-to-many" />
+  
+  <!-- messages to media -->
+  <path d="M 850 320 L 850 400" class="relationship one-to-many" />
+  
+  <!-- chats to chat_modes -->
+  <path d="M 500 280 C 500 400, 500 500, 500 550" class="relationship one-to-many" />
+  
+  <!-- Legend -->
+  <rect x="50" y="600" width="250" height="150" fill="white" stroke="#333" stroke-width="1" />
+  <text x="60" y="620" class="table-text" style="font-weight: bold">Legend:</text>
+  <text x="60" y="645" class="table-text pk">PK - Primary Key</text>
+  <text x="60" y="670" class="table-text fk">FK - Foreign Key</text>
+  <line x1="60" y1="690" x2="120" y2="690" class="relationship one-to-many" />
+  <text x="130" y="695" class="table-text">One-to-Many Relationship</text>
+  <text x="60" y="720" class="table-text">UUID - Universally Unique Identifier</text>
+  <text x="60" y="740" class="table-text">JSONB - JSON Binary Format</text>
+</svg>
