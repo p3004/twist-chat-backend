@@ -11,4 +11,5 @@ fun Application.module() {
     configureMonitoring()
     initDatabase()
     configureRouting()
+    configureSockets()
 }
