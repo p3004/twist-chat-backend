@@ -1,4 +1,4 @@
-package chat.twist.com
+package chat.twist.com.configure
 
 import io.ktor.http.*
 import io.ktor.server.application.*

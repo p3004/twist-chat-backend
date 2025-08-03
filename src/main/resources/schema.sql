@@ -8,7 +8,8 @@ CREATE TABLE users (
     username VARCHAR(64) UNIQUE NOT NULL,
     display_name VARCHAR(128),
     avatar_url TEXT,
-    created_at TIMESTAMP DEFAULT NOW()
+    created_at TIMESTAMP DEFAULT NOW(),
+    email VARCHAR(255) DEFAULT 'default@email.com'
 );
 
 -- CHATS TABLE
