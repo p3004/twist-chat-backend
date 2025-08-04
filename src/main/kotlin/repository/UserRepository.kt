@@ -34,36 +34,9 @@ class UserRepository {
     
     // Get user by ID
     fun getUserById(userId: String): User? = transaction {
-        UserTable.select { UserTable.id eq UUID.fromString(userId) }
+        UserTable.selectAll().where { UserTable.id eq UUID.fromString(userId) }
             .map { rowToUser(it) }
             .singleOrNull()
-    }
-    
-    // Get user by Firebase UID
-    fun getUserByFirebaseUid(firebaseUid: String): User? = transaction {
-        UserTable.select { UserTable.firebaseUid eq firebaseUid }
-            .map { rowToUser(it) }
-            .singleOrNull()
-    }
-    
-    // Get user by username
-    fun getUserByUsername(username: String): User? = transaction {
-        UserTable.select { UserTable.userName eq username }
-            .map { rowToUser(it) }
-            .singleOrNull()
-    }
-    
-    // Get user by email
-    fun getUserByEmail(email: String): User? = transaction {
-        UserTable.select { UserTable.email eq email }
-            .map { rowToUser(it) }
-            .singleOrNull()
-    }
-    
-    // Get all users
-    fun getAllUsers(): List<User> = transaction {
-        UserTable.selectAll()
-            .map { rowToUser(it) }
     }
     
     // Delete user
@@ -75,33 +48,33 @@ class UserRepository {
     fun usernameExists(username: String): Boolean = transaction {
         ConfigureUserNameBloomFilter.mightContain(username)
     }
-
-    fun isUsernameUnique(username: String): Boolean {
-        return if (!usernameExists(username)) {
-            true
-        } else {
-            // Might be a false positive, verify with DB
-            transaction {
-                UserTable.selectAll()
-                    .where { UserTable.userName eq username }
-                    .empty()
-            }
+    
+    // Search users by multiple criteria (username, display name, or email)
+    fun searchUsers(query: String, limit: Int = 20, offset: Int = 0): List<User> = transaction {
+        // Create a query with OR conditions for all searchable fields
+        val searchQuery = Op.build {
+            (UserTable.userName like "%$query%") or
+            (UserTable.displayName like "%$query%") or
+            (UserTable.email like "%$query%")
         }
+        
+        UserTable.selectAll().where(searchQuery)
+            .orderBy(UserTable.displayName)
+            .limit(limit, offset.toLong())
+            .map { rowToUser(it) }
     }
     
-    // Check if email exists
-    fun emailExists(email: String): Boolean = transaction {
-        UserTable.select { UserTable.email eq email }.count() > 0
-    }
-    
-    // Check if Firebase UID exists
-    fun firebaseUidExists(firebaseUid: String): Boolean = transaction {
-        UserTable.select { UserTable.firebaseUid eq firebaseUid }.count() > 0
-    }
-    
-    // Search users by display name
-    fun searchUsersByDisplayName(query: String): List<User> = transaction {
-        UserTable.select { UserTable.displayName like "%$query%" }
+    // Get user suggestions (for autocomplete)
+    fun getUserSuggestions(query: String, maxResults: Int = 5): List<User> = transaction {
+        val searchQuery = Op.build {
+            (UserTable.userName like "$query%") or
+            (UserTable.displayName like "$query%") or
+            (UserTable.email like "$query%")
+        }
+
+        UserTable.selectAll().where(searchQuery)
+            .orderBy(UserTable.displayName)
+            .limit(maxResults)
             .map { rowToUser(it) }
     }
     

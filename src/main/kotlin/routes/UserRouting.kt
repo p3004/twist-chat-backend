@@ -58,6 +58,47 @@ fun Route.userRouting() {
             }
         }
 
+        // Search users by query string (username, display name, or email)
+        get("/search") {
+            try {
+                val query = call.request.queryParameters["q"] ?: return@get call.respond(
+                    HttpStatusCode.BadRequest, "Missing search query parameter 'q'"
+                )
+                
+                // Get pagination parameters with defaults
+                val limit = call.request.queryParameters["limit"]?.toIntOrNull() ?: 20
+                val offset = call.request.queryParameters["offset"]?.toIntOrNull() ?: 0
+                
+                // Validate parameters
+                if (query.length < 2) {
+                    return@get call.respond(HttpStatusCode.BadRequest, "Search query must be at least 2 characters")
+                }
+                
+                if (limit > 50) {
+                    return@get call.respond(HttpStatusCode.BadRequest, "Maximum limit is 50 results")
+                }
+                
+                val users = userRepository.searchUsers(query, limit, offset)
+                call.respond(Users(users = users))
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.InternalServerError, "Error: ${e.message}")
+            }
+        }
+
+        delete("/delete/{id}") {
+            try {
+                val userId = call.parameters["id"] ?: return@delete call.respond(
+                    HttpStatusCode.BadRequest, "Missing user id parameter"
+                )
+
+                val userDeleted = userRepository.deleteUser(userId)
+
+                call.respond(userDeleted)
+
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.InternalServerError, "Error: ${e.message}")
+            }
+        }
     }
 
 
