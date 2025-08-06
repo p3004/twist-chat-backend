@@ -63,21 +63,7 @@ class UserRepository {
             .limit(limit, offset.toLong())
             .map { rowToUser(it) }
     }
-    
-    // Get user suggestions (for autocomplete)
-    fun getUserSuggestions(query: String, maxResults: Int = 5): List<User> = transaction {
-        val searchQuery = Op.build {
-            (UserTable.userName like "$query%") or
-            (UserTable.displayName like "$query%") or
-            (UserTable.email like "$query%")
-        }
 
-        UserTable.selectAll().where(searchQuery)
-            .orderBy(UserTable.displayName)
-            .limit(maxResults)
-            .map { rowToUser(it) }
-    }
-    
     // Helper function to convert ResultRow to User
     private fun rowToUser(row: ResultRow): User {
         return User(

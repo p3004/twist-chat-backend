@@ -28,7 +28,6 @@ fun Route.userRouting() {
                 ConfigureUserNameBloomFilter.addUsername(user.userName)
                 call.respondText(upsertUserId)
             } catch (e: BadRequestException) {
-                println(" [31m$e [0m")
                 call.respond(HttpStatusCode.BadRequest)
             }
         }
