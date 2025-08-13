@@ -1,6 +1,6 @@
 package chat.twist.com.configure
 
-
+import chat.twist.com.websocket.configureChatWebSockets
 import io.ktor.server.application.*
 import io.ktor.server.websocket.*
 import java.time.Duration
@@ -12,4 +12,6 @@ fun Application.configureSockets() {
         maxFrameSize = Long.MAX_VALUE
         masking = false
     }
+    
+    configureChatWebSockets()
 }

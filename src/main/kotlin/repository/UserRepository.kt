@@ -65,7 +65,7 @@ class UserRepository {
     }
 
     // Helper function to convert ResultRow to User
-    private fun rowToUser(row: ResultRow): User {
+    fun rowToUser(row: ResultRow): User {
         return User(
             userId = row[UserTable.id].toString(),
             firebaseUid = row[UserTable.firebaseUid],

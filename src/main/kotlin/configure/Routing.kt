@@ -3,6 +3,8 @@ package chat.twist.com.configure
 import chat.twist.com.model.Auth
 import chat.twist.com.model.AuthList
 import chat.twist.com.model.AuthTable
+import chat.twist.com.routes.chatRouting
+import chat.twist.com.routes.messageRouting
 import chat.twist.com.routes.userRouting
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -29,6 +31,7 @@ fun Application.configureRouting() {
             call.respond(AuthList(authList = users))
         }
         userRouting()
-
+        chatRouting()
+        messageRouting()
     }
 }
