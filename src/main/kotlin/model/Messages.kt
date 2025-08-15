@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.javatime.timestamp
 import org.jetbrains.exposed.sql.json.jsonb
+import java.time.Instant
 
 object MessageTable: UUIDTable("public.messages") {
     val chatId = reference("chat_id", ChatTable)
@@ -14,6 +15,7 @@ object MessageTable: UUIDTable("public.messages") {
     val messageType = varchar("message_type", 32).default("text")
     val isDeleted = bool("is_deleted").default(false)
     val expiresAt = timestamp("expires_at").nullable()
+    val createdAt = timestamp("created_at").default(Instant.now())
     val extra = jsonb(
         "extra",
         serialize = { it },       // storing String as-is

@@ -52,7 +52,6 @@ class MessageRepository {
             senderId = row[MessageTable.senderId].value.toString(),
             content = row[MessageTable.content],
             messageType = row[MessageTable.messageType],
-            createdAt = row[MessageTable.createdAt].toString(),
             isDeleted = row[MessageTable.isDeleted],
             expiresAt = row[MessageTable.expiresAt]?.toString(),
             extra = row[MessageTable.extra]

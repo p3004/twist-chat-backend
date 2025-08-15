@@ -32,18 +32,23 @@ dependencies {
     implementation("io.ktor:ktor-server-call-logging:$ktor_version")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
     implementation("io.ktor:ktor-server-websockets:$ktor_version")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
     // Koin dependencies
     implementation("io.insert-koin:koin-core:$koin_version")
     implementation("io.insert-koin:koin-ktor:$koin_version")
     implementation("io.insert-koin:koin-logger-slf4j:$koin_version")
     testImplementation("io.insert-koin:koin-test:$koin_version")
 
-    //Guava for bloom filter
-    implementation("com.google.guava:guava:33.1.0-jre")
-
     implementation("ch.qos.logback:logback-classic:$logback_version")
     implementation("org.slf4j:slf4j-api:2.0.13")
+
+    // Force coroutines version compatible with Ktor 2.3.6
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core") {
+        version {
+            strictly("1.7.3")
+        }
+    }
+
 
     //exposed
     implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
@@ -55,4 +60,16 @@ dependencies {
     implementation("org.postgresql:postgresql:42.7.3")
     testImplementation("io.ktor:ktor-server-test-host:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+
+    configurations.all {
+        resolutionStrategy.eachDependency {
+            if (requested.group == "org.jetbrains.kotlinx" &&
+                requested.name.contains("serialization")) {
+                useVersion("1.6.3")
+            }
+            if (requested.group == "io.ktor") {
+                useVersion("2.3.6")
+            }
+        }
+    }
 }
