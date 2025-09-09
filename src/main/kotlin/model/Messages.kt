@@ -1,6 +1,8 @@
 package chat.twist.com.model
 
 
+import chat.twist.com.utils.MEDIA_TABLE_NAME
+import chat.twist.com.utils.MESSAGES_TABLE_NAME
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.dao.id.UUIDTable
@@ -8,7 +10,7 @@ import org.jetbrains.exposed.sql.javatime.timestamp
 import org.jetbrains.exposed.sql.json.jsonb
 import java.time.Instant
 
-object MessageTable: UUIDTable("public.messages") {
+object MessageTable: UUIDTable(MESSAGES_TABLE_NAME) {
     val chatId = reference("chat_id", ChatTable)
     val senderId = reference("sender_id", UserTable)
     val content = text("content")
@@ -23,7 +25,7 @@ object MessageTable: UUIDTable("public.messages") {
     ).nullable()
 }
 
-object MediaTable: UUIDTable("public.media") {
+object MediaTable: UUIDTable(MEDIA_TABLE_NAME) {
     val messageId = reference("message_id", MessageTable)
     val url = text("url")
     val mediaType = varchar("media_type", 32).nullable()

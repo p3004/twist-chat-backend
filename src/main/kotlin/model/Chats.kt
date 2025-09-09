@@ -1,5 +1,7 @@
 package chat.twist.com.model
 
+import chat.twist.com.utils.CHATS_TABLE_NAME
+import chat.twist.com.utils.CHAT_MEMBER_TABLE_NAME
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.dao.id.UUIDTable
@@ -9,7 +11,7 @@ import org.jetbrains.exposed.sql.javatime.time
 import org.jetbrains.exposed.sql.javatime.timestamp
 import java.time.Instant
 
-object ChatTable: UUIDTable("public.chats") {
+object ChatTable: UUIDTable(CHATS_TABLE_NAME) {
     val isGroup = bool("is_group")
     val name = varchar("name", 128).nullable()
     val createdBy = reference("created_by", UserTable)
@@ -17,7 +19,7 @@ object ChatTable: UUIDTable("public.chats") {
     val mode = varchar("mode", 32).default("normal")
 }
 
-object ChatMemberTable: Table("public.chat_members") {
+object ChatMemberTable: Table(CHAT_MEMBER_TABLE_NAME) {
     val chatId = reference("chat_id", ChatTable)
     val userId = reference("user_id", UserTable)
 
@@ -41,6 +43,14 @@ data class Chat(
 )
 
 @Serializable
+data class ChatCreate(
+    @SerialName("chat")
+    val chat: Chat,
+    @SerialName("member_ids")
+    val memberIds: List<String>
+)
+
+@Serializable
 data class ChatMember(
     @SerialName("chat_id")
     val chatId: String,
@@ -54,6 +64,14 @@ data class ChatMember(
 data class ChatWithMembers(
     val chat: Chat,
     val members: List<User>
+)
+
+@Serializable
+data class DirectChatMembers(
+    @SerialName("chat_creator_user_id")
+    val chatCreatorUserId: String,
+    @SerialName("chat_receiver_user_id")
+    val chatReceiverUserId: String,
 )
 
 @Serializable

@@ -15,6 +15,17 @@ version = "0.0.1"
 
 application {
     mainClass = "io.ktor.server.netty.EngineMain"
+
+    tasks.register<Jar>("fatJar") {
+        archiveBaseName.set("chatapp-backend")
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        manifest {
+            attributes["Main-Class"] = "chat.twist.com.ApplicationKt"
+        }
+        from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
+        with(tasks.jar.get())
+    }
+
 }
 
 repositories {

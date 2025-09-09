@@ -17,15 +17,9 @@ fun Route.chatRouting() {
         // Create a new chat
         post("/create") {
             try {
-                val request = call.receive<Map<String, Any>>()
-                val chat = Chat(
-                    chatId = null,
-                    isGroup = request["is_group"] as Boolean,
-                    name = request["name"] as? String,
-                    createdBy = request["created_by"] as String,
-                    mode = (request["mode"] as? String) ?: "normal"
-                )
-                val memberIds = request["member_ids"] as List<String>
+                val request = call.receive<ChatCreate>()
+                val chat = request.chat
+                val memberIds = request.memberIds
                 
                 val chatId = chatRepository.createChat(chat, memberIds)
                 call.respondText(chatId)
@@ -111,16 +105,13 @@ fun Route.chatRouting() {
         // Check or create direct chat between two users
         post("/direct") {
             try {
-                val request = call.receive<Map<String, String>>()
-                val user1Id = request["user1_id"] ?: return@post call.respond(
-                    HttpStatusCode.BadRequest, "Missing user1_id"
-                )
-                val user2Id = request["user2_id"] ?: return@post call.respond(
-                    HttpStatusCode.BadRequest, "Missing user2_id"
-                )
+                val request = call.receive<DirectChatMembers>()
                 
                 // Check if a direct chat already exists
-                var chatId = chatRepository.getDirectChatBetweenUsers(user1Id, user2Id)
+                var chatId = chatRepository.getDirectChatBetweenUsers(
+                    user1Id = request.chatCreatorUserId,
+                    user2Id = request.chatReceiverUserId
+                )
                 
                 // If not, create a new direct chat
                 if (chatId == null) {
@@ -128,10 +119,13 @@ fun Route.chatRouting() {
                         chatId = null,
                         isGroup = false,
                         name = null,  // Direct chats don't need names
-                        createdBy = user1Id,
+                        createdBy = request.chatCreatorUserId,
                         mode = "normal"
                     )
-                    chatId = chatRepository.createChat(chat, listOf(user1Id, user2Id))
+                    chatId = chatRepository.createChat(
+                        chat = chat,
+                        memberIds = listOf(request.chatCreatorUserId,request.chatReceiverUserId)
+                    )
                 }
                 
                 call.respondText(chatId)

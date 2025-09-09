@@ -19,6 +19,7 @@ class UserRepository {
                 it[email] = user.email
                 it[displayName] = user.displayName
                 it[avatarUrl] = user.avatarUrl
+                it[bio] = user.bio ?: ""
             }.value.toString()
         } else {
             UserTable.update({ UserTable.id eq UUID.fromString(user.userId) }) {
@@ -27,6 +28,7 @@ class UserRepository {
                 it[email] = user.email
                 it[displayName] = user.displayName
                 it[avatarUrl] = user.avatarUrl
+                it[bio] = user.bio ?: ""
             }
             user.userId
         }
@@ -57,10 +59,10 @@ class UserRepository {
             (UserTable.displayName like "%$query%") or
             (UserTable.email like "%$query%")
         }
-        
+
         UserTable.selectAll().where(searchQuery)
             .orderBy(UserTable.displayName)
-            .limit(limit, offset.toLong())
+            .limit(limit).offset(offset.toLong())
             .map { rowToUser(it) }
     }
 
@@ -72,7 +74,8 @@ class UserRepository {
             userName = row[UserTable.userName],
             displayName = row[UserTable.displayName],
             avatarUrl = row[UserTable.avatarUrl],
-            email = row[UserTable.email]
+            email = row[UserTable.email],
+            bio = row[UserTable.bio]
         )
     }
 }
