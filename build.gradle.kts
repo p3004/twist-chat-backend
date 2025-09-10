@@ -18,13 +18,21 @@ application {
 
     tasks.register<Jar>("fatJar") {
         archiveBaseName.set("chatapp-backend")
+        archiveVersion.set("") // no version in filename
+        archiveClassifier.set("") // no classifier (like -all)
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
         manifest {
             attributes["Main-Class"] = "chat.twist.com.ApplicationKt"
         }
-        from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
+
+        from(configurations.runtimeClasspath.get().map {
+            if (it.isDirectory) it else zipTree(it)
+        })
+
         with(tasks.jar.get())
     }
+
 
 }
 
